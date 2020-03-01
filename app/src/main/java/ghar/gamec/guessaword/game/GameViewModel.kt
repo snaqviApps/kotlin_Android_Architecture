@@ -11,7 +11,7 @@ class GameViewModel:ViewModel() {
     val LOG_GameViewModel = "GameViewModel"
 
     // The current word
-//    var word = ""
+    //    var word = ""
     private val _word = MutableLiveData<String>()               /** 'current-word', moved to LiveData */
     val word:LiveData<String>
     get() = _word                                               /** Applied 'Backing property': Mutable-LiveData (_word) being exposed through 'LiveData'
