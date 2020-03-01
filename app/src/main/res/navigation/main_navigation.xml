@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_guess"
+    app:startDestination="@id/title_destination">
+
+    <fragment
+        android:id="@+id/title_destination"
+        android:name="ghar.gamec.guessaword.title.TitleFragment"
+        android:label="fragment_title"
+        tools:layout="@layout/fragment_title" >
+        <action
+            android:id="@+id/action_title_destination_to_game_destination"
+            app:destination="@+id/game_destination" />
+    </fragment>
+    <fragment
+        android:id="@+id/game_destination"
+        android:name="ghar.gamec.guessaword.game.GameFragment"
+        android:label="fragment_game"
+        tools:layout="@layout/fragment_game" >
+        <action
+            android:id="@+id/action_gameFragment_to_scoreFragment"
+            app:destination="@id/score_destination"
+            app:popUpTo="@+id/title_destination" />
+    </fragment>
+    <fragment
+        android:id="@+id/score_destination"
+        android:name="ghar.gamec.guessaword.score.ScoreFragment"
+        android:label="fragment_score"
+        tools:layout="@layout/fragment_score" >
+        <action
+            android:id="@+id/action_score_destination_to_game_destination"
+            app:destination="@id/game_destination"
+            app:enterAnim="@anim/fragment_fade_exit"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="scoreSent"
+            app:argType="integer" />
+    </fragment>
+</navigation>
