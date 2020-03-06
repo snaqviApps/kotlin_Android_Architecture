@@ -1,4 +1,4 @@
-package ghar.gamec.guessaword.title
+package ghar.gamec.guessaword.ui.title
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
