@@ -25,6 +25,20 @@ android {
         }
     }
 
+    /** below 'compilerOptions' removes the below error
+     * " Cannot inline bytecode built with JVM target 1.8 into bytecode
+     * that is being built with JVM target 1.6.
+     * Please specify proper '-jvm-target' option"
+     */
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
 
 }
 

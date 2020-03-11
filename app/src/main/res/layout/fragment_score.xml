@@ -6,7 +6,7 @@
 
     <data>
         <variable
-            name="scoreViewModelXml"
+            name="scoreViewModelView"
             type="ghar.gamec.guessaword.ui.score.ScoreViewModel" />
     </data>
 
@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="324dp"
-        android:text="TextView"
+        android:text="@{String.valueOf(scoreViewModelView.scoreScore)}"
         android:textSize="32sp"
         apps:layout_constraintBottom_toTopOf="@+id/play_again_button"
         apps:layout_constraintEnd_toEndOf="parent"
@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:text="@string/play_again"
-        android:onClick="@{()-> scoreViewModelXml.onPlayAgain()}"
+        android:onClick="@{()-> scoreViewModelView.onPlayAgain()}"
         apps:layout_constraintBottom_toBottomOf="parent"
         apps:layout_constraintEnd_toEndOf="parent"
         apps:layout_constraintStart_toStartOf="parent" />

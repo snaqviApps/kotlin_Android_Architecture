@@ -42,22 +42,27 @@ class ScoreFragment : Fragment() {
         scoreViewModel = ViewModelProvider(this, scoreViewModelFactory)                                          // ViewModel reference via ViewModelFactory
             .get(ScoreViewModel::class.java)
 
-        bindingScore.scoreViewModelXml = scoreViewModel
+        bindingScore.scoreViewModelView = scoreViewModel
+
+        // TODO: Call binding.setLifecycleOwner to make the data binding lifecycle aware:
+        bindingScore.lifecycleOwner = this.viewLifecycleOwner
 
         // Add observer for score
-        scoreViewModel.scoreScore.observe(this.viewLifecycleOwner, Observer { scoreReceived ->
-            bindingScore.scoreText.text = scoreReceived.toString()
-        })
+//        scoreViewModel.scoreScore.observe(this.viewLifecycleOwner, Observer {scoreReceived ->
+//            bindingScore.scoreText.text = scoreReceived.toString()
+//        })
 
-        /** Code lines# 58 - 60 replaced as data-binding in associated xml-file fragment_game.xml
-         * is now using
-         *  <data>  </data>
+        /** Code below
+         * bindingScore.playAgainButton.setOnClickListener
+         * {
+         *      scoreViewModel.onPlayAgain()
+         * }
+         * got replaced with below viewModel_added_to_data-binding in fragment_score.xml
+         *  <data> ... </data>
          *  block and associated @{() -> viewModel.<methods>}
          *  using "onClick" attribute
          */
-//        bindingScore.playAgainButton.setOnClickListener {
-//            scoreViewModel.onPlayAgain()
-//        }
+
 
         /** Navigates back to title when button is pressed */
         scoreViewModel.eventPlayAgain.observe(this.viewLifecycleOwner, Observer {playAgain ->

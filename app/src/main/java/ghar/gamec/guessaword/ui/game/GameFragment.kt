@@ -1,13 +1,15 @@
 package ghar.gamec.guessaword.ui.game
 
-
+import android.os.Build
 import android.os.Bundle
-import android.text.format.DateUtils
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +22,7 @@ import ghar.gamec.guessaword.databinding.FragmentGameBinding
 /**
  * A simple [Fragment] subclass.
  */
+
 class GameFragment : Fragment() {
 
     private lateinit var gameViewModel: GameViewModel
@@ -30,47 +33,35 @@ class GameFragment : Fragment() {
         // Inflate the layout for this fragment
 
         bindingGame = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_game,
+            inflater,
+            R.layout.fragment_game,
             container,
             false)
 
-        /** ViewModel added to dataBinding */
+        gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)          /** ViewModel added to dataBinding */
+        bindingGame.gameViewModelView = gameViewModel
+
+        // TODO: Call binding.setLifecycleOwner to make the data binding lifecycle aware:
+        bindingGame.lifecycleOwner = this.viewLifecycleOwner
 
         Log.i("GameFragment", "ViewModelProvider called in GameFragment_OnCreateView() ")
-        gameViewModel = ViewModelProvider(this).get(GameViewModel::class.java)
-        bindingGame.gameViewModelXml = gameViewModel
-        /** Life-Cycle Library creating viewModel class */
 
-        /** Code lines# 44 - 50 replaced as data-binding in associated xml-file fragment_game.xml
-         * is now using
-         *  <data>  </data>
-         *  block and associated @{() -> viewModel.<methods>}
-         *  using "onClick" attribute
-         */
-//        bindingGame.correctButton.setOnClickListener {
-//            gameViewModel.onCorrect()       // moved to viewModel-version of same method
-//        }
-//
-//        bindingGame.skipButton.setOnClickListener {
-//            gameViewModel.onSkip()          // moved to viewModel-version of same method
-//        }
-
-        gameViewModel.word.observe(this.viewLifecycleOwner, Observer { newWord ->
-            bindingGame.wordText.text = newWord.toString()
-        })
-
-        gameViewModel.score.observe(this.viewLifecycleOwner, Observer { newScore ->                     /** LiveData Observer for 'word' (UIController i.e Fragment */
-            bindingGame.scoreText.text = newScore.toString()
-        })
-
-        gameViewModel.currentTime.observe(this.viewLifecycleOwner, Observer { instant ->              /** update current Time */
-            bindingGame.timerText.text = DateUtils.formatElapsedTime(instant)
-        })
+        /** Below code moved to viewModel so it could be sent to view using data-binding */
+//        gameViewModel.currentTime.observe(this.viewLifecycleOwner, Observer { instant ->              /** update current Time */
+//            bindingGame.timerText.text = DateUtils.formatElapsedTime(instant)
+//        })
 
         gameViewModel.eventGameFinished.observe(this.viewLifecycleOwner, Observer {hasChanged ->
             if(hasChanged){
                 gameFinished()
                 gameViewModel.onGameFinishComplete()            // Stopping live-Data from further updating
+            }
+        })
+
+        gameViewModel.eventBuzz.observe(this.viewLifecycleOwner, Observer { buzzing ->
+            if(buzzing != BuzzType.NO_BUZZ){
+                buzz(buzzing.pattern)
+                gameViewModel.onCompleteBuzz()
             }
         })
         return bindingGame.root
@@ -80,6 +71,17 @@ class GameFragment : Fragment() {
         val scoreStatus = gameViewModel.score.value ?: 0
         val action = GameFragmentDirections.actionGameFragmentToScoreFragment(scoreStatus)
         findNavController(this).navigate(action)
+    }
+
+    private fun buzz(pattern: LongArray) {
+        val buzzer = activity?.getSystemService<Vibrator>()
+        buzzer.let {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                it?.vibrate(VibrationEffect.createWaveform(pattern, -1))
+            }else{
+                it?.vibrate(pattern, -1)
+            }
+        }
     }
 
 }
